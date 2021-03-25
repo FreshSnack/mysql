@@ -12,6 +12,8 @@
 
 * 连接mysql `mysql -uroot -p1234 -h127.0.0.1 -P3306`
 
+* 清理控制台 `system clear`
+
 
 ### 主从复制
 [深入理解mysql复制](https://blog.csdn.net/bzhxuexi/article/details/43700329)
@@ -34,6 +36,51 @@ MySQL复制技术有以下一些特点：
 3. slave重做中继日志中的事件，将改变反映它自己的数据。
 
 ![](./etc/img.png)
+
+### 主从配置
+VIM操作：
+* dd删除一行
+
+* p粘贴
+
+* u撤销
+
+master配置
+```aidl
+server-id=1
+log-bin=mysql-bin
+```
+slave配置
+```aidl
+server-id=2
+log-bin=mysql-bin
+relay_log= mysql-relay-bin
+log_slave_updates = 1
+read_only= 1
+```
+
+连接slave to master
+```aidl
+CHANGE MASTER TO
+MASTER_HOST='172.17.0.2',
+MASTER_USER='root',
+MASTER_PASSWORD='1234',
+MASTER_PORT=3306,
+MASTER_LOG_FILE='mysql-bin.000001',
+MASTER_LOG_POS=4,
+MASTER_CONNECT_RETRY=10;
+```
+启动复制 `start slave`
+
+停止复制 `stop slave`
+
+```aidl
+Slave_IO_Running: Yes
+Slave_SQL_Running: Yes
+```
+需要拥有相同database
+
+
 
 
 
